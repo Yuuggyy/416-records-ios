@@ -27,3 +27,30 @@ workflows:
           zip -qr 416-records-ios-nonsigne.zip Payload
     artifacts:
       - 416-records-ios-nonsigne.zip
+
+  ios-simulateur:
+    name: iOS simulateur (Appetize)
+    instance_type: mac_mini_m2
+    max_build_duration: 40
+    environment:
+      flutter: 3.24.5
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Dependances Flutter
+        script: flutter pub get
+      - name: Generer le projet iOS (Podfile)
+        script: |
+          flutter build ios --config-only --no-codesign
+          cd ios
+          pod install
+      - name: Compiler pour simulateur
+        script: |
+          flutter build ios --simulator --debug \
+            --dart-define=API_BASE=https://api-416-records.onrender.com/api/
+      - name: Archiver le resultat
+        script: |
+          cd build/ios/iphonesimulator
+          zip -qr $CM_BUILD_DIR/416-records-simulateur.zip Runner.app
+    artifacts:
+      - 416-records-simulateur.zip
