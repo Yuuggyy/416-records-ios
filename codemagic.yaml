@@ -1,0 +1,29 @@
+workflows:
+  ios-sans-signature:
+    name: iOS sans signature
+    instance_type: mac_mini_m2
+    max_build_duration: 40
+    environment:
+      flutter: 3.24.5
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Dependances Flutter
+        script: flutter pub get
+      - name: Generer le projet iOS (Podfile)
+        script: |
+          # Le Podfile n'est pas dans le depot : Flutter le cree ici, puis CocoaPods s'installe.
+          flutter build ios --config-only --no-codesign
+          cd ios
+          pod install
+      - name: Compiler iOS (sans signature)
+        script: |
+          flutter build ios --release --no-codesign \
+            --dart-define=API_BASE=https://api-416-records.onrender.com/api/
+      - name: Archiver le resultat
+        script: |
+          mkdir -p Payload
+          cp -R build/ios/iphoneos/Runner.app Payload/
+          zip -qr 416-records-ios-nonsigne.zip Payload
+    artifacts:
+      - 416-records-ios-nonsigne.zip
