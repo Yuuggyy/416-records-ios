@@ -207,12 +207,15 @@ class BarreOnglets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Zone sûre du bas : l'indicateur d'accueil des iPhone (≈34 px) ne doit pas
+    // recouvrir les onglets. Sur Android à boutons, la valeur est de 0.
+    final zoneSure = MediaQuery.viewPaddingOf(context).bottom;
     return Container(
       decoration: const BoxDecoration(
         color: Pal.fond,
         border: Border(top: BorderSide(color: Pal.filet)),
       ),
-      padding: const EdgeInsets.only(top: 10, bottom: 12),
+      padding: EdgeInsets.only(top: 10, bottom: 12 + zoneSure),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [

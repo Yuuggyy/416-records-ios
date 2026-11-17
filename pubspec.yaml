@@ -18,7 +18,6 @@ dependencies:
   url_launcher: ^6.3.0
   google_sign_in: ^6.2.1
   google_sign_in_web: ^0.12.4+4
-  unity_levelplay_mediation: 9.0.1
 
 dev_dependencies:
   flutter_test:

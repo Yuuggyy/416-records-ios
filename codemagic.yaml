@@ -48,6 +48,14 @@ workflows:
         script: |
           flutter build ios --simulator --debug \
             --dart-define=API_BASE=https://api-416-records.onrender.com/api/
+      - name: Verifier que c'est un build simulateur
+        script: |
+          APP=build/ios/iphonesimulator/Runner.app
+          test -d "$APP" || { echo "Runner.app simulateur introuvable"; exit 1; }
+          PLATEFORME=$(/usr/libexec/PlistBuddy -c "Print :CFBundleSupportedPlatforms:0" "$APP/Info.plist")
+          echo "Plateforme: $PLATEFORME"
+          [ "$PLATEFORME" = "iPhoneSimulator" ] || { echo "Ce n'est pas un build simulateur"; exit 1; }
+          lipo -info "$APP/Runner" || true
       - name: Archiver le resultat
         script: |
           cd build/ios/iphonesimulator
